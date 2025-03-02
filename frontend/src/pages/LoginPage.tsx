@@ -15,13 +15,13 @@ export default function LoginPage() {
         setError('');
 
         try {
-            const response = await axios.post(`http://localhost:5001/api/login`, {
+            const response = await axios.post(`http://localhost:5001/api/user/login`, {
                 email,
                 password
             })
             console.log(response.data);
             localStorage.setItem('token', response.data.token);
-            navigate('/');
+            navigate('/profile');
             
         } catch (err:any) {
             setError(err.response?.data?.message || "Login FailedFailed 😬😑 ");

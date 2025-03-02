@@ -41,7 +41,7 @@ export const registration = async (req: Request, res: Response) => {
 }
 
 export const login = async(req:Request, res:Response) =>{
-    const {email , password} = req.body;
+    const {email , password, name} = req.body;
 
 
     try{
@@ -60,7 +60,7 @@ export const login = async(req:Request, res:Response) =>{
         }
 
         //Generate jwt token
-        const token = generateToken({userId:user.id.toString(), role:user.role});
+        const token = generateToken({userId:user.id.toString(), role:user.role , name:user.name});
 
         //send the json to client
         res.json({token});

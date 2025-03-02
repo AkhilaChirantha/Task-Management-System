@@ -6,7 +6,7 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
 //functions to generate the jwt token
-export const generateToken = (payload:{userId:string, role:string}) =>{
+export const generateToken = (payload:{userId:string, role:string, name:string}) =>{
     return jwt.sign(payload, JWT_SECRET, { expiresIn: '6h' }); // here I have setuped the token will be expired after the 6 hours.
 }
 

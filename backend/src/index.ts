@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
-app.use(router);
+app.use('/api/user',router);
 
 app.get('/', (req, res) => {
   res.send('Task Management System Backend');
