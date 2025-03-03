@@ -2,18 +2,18 @@ import express from 'express';
 import { login, registration } from '../controllers/authController';
 import { authMiddleware } from '../middleware/authMiddleware';
 
-const router = express.Router();
+const useRouter = express.Router();
 
 //For Registration part, we need to use POST method.
-router.post('/register',registration);
+useRouter.post('/register',registration);
 
 //For the Loging part we need to use Get method.
-router.post('/login', login);
+useRouter.post('/login', login);
 
 //protected router
-router.get('/profile', authMiddleware, (req, res) => {
+useRouter.get('/profile', authMiddleware, (req, res) => {
     res.json({message:"Welcome to your Profile 🤓🤓🤓 ", user:(req as any).user});
 });
 
 
-export default router;
+export default useRouter;

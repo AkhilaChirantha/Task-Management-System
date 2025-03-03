@@ -3,6 +3,8 @@ import Home from './pages/Home';
 import RegistrationPage from './pages/RegistrationPage';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
+import TaskFormPage from './pages/TaskFormPage';
+import TaskList from './pages/TaskList';
 
 
 function App() {
@@ -13,6 +15,8 @@ function App() {
         <Route path='/register' element={<RegistrationPage/>} />
         <Route path='/login' element={<LoginPage/>} />
         <Route path='/profile' element={<ProfilePage/>} />
+        <Route path='/taskform/create' element={<TaskFormPage/>} />
+        <Route path='/tasks' element={<TaskList/>} />
       </Routes>
     </Router>
   );

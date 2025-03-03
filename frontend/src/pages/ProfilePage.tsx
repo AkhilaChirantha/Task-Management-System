@@ -45,7 +45,12 @@ export default function ProfilePage() {
         <div>
             <p>User Name : {user.name}</p>
             <p>User Role : {user.role}</p>
+
+            <button type="button" onClick={() => navigate("/taskform/create")}>
+        Logout
+      </button>
         </div>
+        
     )}
 
       
