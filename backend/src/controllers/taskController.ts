@@ -63,7 +63,7 @@ export const deleteTask = async (req:Request, res:Response) => {
             res.status(404).json({message : ' එහෙම task එකක් add කරලා නැතෝ 🫠'});
             return;
         }
-        res.json(task);
+        res.json({message:'Task deleted successfully 🥸'});
         
     } catch (err) {
         console.log(err);
@@ -83,3 +83,24 @@ export const getAllTasks = async(req:Request, res:Response) => {
         res.status(500).json({message:'Server Error'});
     }
 }
+
+// Get a single task by ID
+export const getTaskById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    try {
+        const task = await Task.findById(id)
+            .populate('assignedTo', 'name email')
+            .populate('createdBy', 'name email');
+
+        if (!task) {
+            res.status(404).json({ message: 'Task not found 🫠' });
+            return;
+        }
+        res.json(task);
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server Error' });
+    }
+};

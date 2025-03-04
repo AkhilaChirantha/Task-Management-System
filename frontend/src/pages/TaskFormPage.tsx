@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function TaskFormPage() {
   const [error, setError] = useState('');
@@ -8,9 +8,10 @@ export default function TaskFormPage() {
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState<'Low' | 'Medium' | 'High'>('Medium');
   const [dueDate, setDueDate] = useState('');
-  const [assignedTo, setAssignedTo] = useState<string[]> ([]); //Array type
+  const [assignedTo, setAssignedTo] = useState<string[]>([]); // Array of user IDs
   const [users, setUsers] = useState<any[]>([]); // State to store the list of users
   const navigate = useNavigate();
+  const { taskId } = useParams(); // Get taskId from the URL if updating
 
   // Fetch the list of users
   useEffect(() => {
@@ -29,14 +30,41 @@ export default function TaskFormPage() {
     fetchUsers();
   }, []);
 
+  // Fetch task data if updating
+  useEffect(() => {
+    if (taskId) {
+      const fetchTask = async () => {
+        try {
+          const token = localStorage.getItem('token');
+          const response = await axios.get(`http://localhost:5001/api/tasks/${taskId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const task = response.data;
+          setTitle(task.title);
+          setDescription(task.description);
+          setPriority(task.priority);
+          setDueDate(new Date(task.dueDate).toISOString().split('T')[0]); // Format date for input field
+          setAssignedTo(task.assignedTo.map((user: any) => user._id)); // Set assigned users
+        } catch (err) {
+          console.error('Failed to fetch task', err);
+        }
+      };
+
+      fetchTask();
+    }
+  }, [taskId]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(
-        `http://localhost:5001/api/tasks/`,
+      const url = taskId ? `http://localhost:5001/api/tasks/${taskId}` : `http://localhost:5001/api/tasks/`;
+      const method = taskId ? 'put' : 'post';
+
+      const response = await axios[method](
+        url,
         { title, description, priority, dueDate, assignedTo },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -44,13 +72,13 @@ export default function TaskFormPage() {
       console.log(response.data);
       navigate('/tasks');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to create task 😢😢😢😢');
+      setError(err.response?.data?.message || 'Failed to save task 😢😢😢😢');
     }
   };
 
   return (
     <>
-      <div>Create Task</div>
+      <div>{taskId ? 'Update Task' : 'Create Task'}</div>
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
       <form onSubmit={handleSubmit}>
@@ -66,7 +94,7 @@ export default function TaskFormPage() {
 
         <div>
           Priority :
-          <select  value={priority} onChange={(e) => setPriority(e.target.value as 'Low' | 'Medium' | 'High')}>
+          <select value={priority} onChange={(e) => setPriority(e.target.value as 'Low' | 'Medium' | 'High')}>
             <option value="Low">Low</option>
             <option value="Medium">Medium</option>
             <option value="High">High</option>
@@ -80,10 +108,10 @@ export default function TaskFormPage() {
 
         <div>
           Assign To:
-          <select 
+          <select
             multiple // Allow multiple selections
-            value={assignedTo} 
-            required 
+            value={assignedTo}
+            required
             onChange={(e) => {
               const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
               setAssignedTo(selectedOptions);
@@ -97,9 +125,8 @@ export default function TaskFormPage() {
           </select>
         </div>
 
-
         <div>
-          <button type="submit">Create Task</button>
+          <button type="submit">{taskId ? 'Update Task' : 'Create Task'}</button>
         </div>
       </form>
     </>

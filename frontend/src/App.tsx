@@ -17,6 +17,7 @@ function App() {
         <Route path='/profile' element={<ProfilePage/>} />
         <Route path='/taskform/create' element={<TaskFormPage/>} />
         <Route path='/tasks' element={<TaskList/>} />
+        <Route path='/tasks/update/:taskId' element={<TaskFormPage/>} />
       </Routes>
     </Router>
   );
