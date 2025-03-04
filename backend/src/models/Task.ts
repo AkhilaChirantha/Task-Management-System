@@ -1,13 +1,13 @@
 import mongoose,{Document, Schema} from "mongoose";
 
 export interface ITask extends Document{
-    title: string,
-    description: string,
-    status:'To do' | 'In Progress' | 'Done',
-    priority : 'Low' | 'Medium' | 'High',
-    dueDate: Date,
-    assignedTo: mongoose.Schema.Types.ObjectId, //reference to the user model
-    createdBy: mongoose.Schema.Types.ObjectId   //reference to the user model
+    title: string;
+    description: string;
+    status:'To do' | 'In Progress' | 'Done';
+    priority : 'Low' | 'Medium' | 'High';
+    dueDate: Date;
+    assignedTo: mongoose.Schema.Types.ObjectId[]; //reference to the user model
+    createdBy: mongoose.Schema.Types.ObjectId;   //reference to the user model
 
 }
 
@@ -34,11 +34,11 @@ const TaskSchema : Schema = new Schema({
         type: Date,
         required: true
     },
-    assignedTo: {
+    assignedTo: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
-    },
+    }],
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

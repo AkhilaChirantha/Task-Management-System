@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 
 export default function TaskList() {
 const [ error , setError ] = useState('');
@@ -34,7 +34,7 @@ useEffect(() => {
             <p>Status: {task.status}</p>
             <p>Priority: {task.priority}</p>
             <p>Due Date: {new Date(task.dueDate).toLocaleDateString()}</p>
-            <p>Assigned To: {task.assignedTo.name}</p>
+            <p>Assigned To: {task.assignedTo.map((user: any) => user.name).join(', ')}</p>
             <p>Created By: {task.createdBy.name}</p>
           </li>
         ))}

@@ -8,7 +8,7 @@ export default function TaskFormPage() {
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState<'Low' | 'Medium' | 'High'>('Medium');
   const [dueDate, setDueDate] = useState('');
-  const [assignedTo, setAssignedTo] = useState('');
+  const [assignedTo, setAssignedTo] = useState<string[]> ([]); //Array type
   const [users, setUsers] = useState<any[]>([]); // State to store the list of users
   const navigate = useNavigate();
 
@@ -66,7 +66,7 @@ export default function TaskFormPage() {
 
         <div>
           Priority :
-          <select value={priority} onChange={(e) => setPriority(e.target.value as 'Low' | 'Medium' | 'High')}>
+          <select  value={priority} onChange={(e) => setPriority(e.target.value as 'Low' | 'Medium' | 'High')}>
             <option value="Low">Low</option>
             <option value="Medium">Medium</option>
             <option value="High">High</option>
@@ -80,8 +80,15 @@ export default function TaskFormPage() {
 
         <div>
           Assign To:
-          <select value={assignedTo} required onChange={(e) => setAssignedTo(e.target.value)}>
-            <option value="">Select a user</option>
+          <select 
+            multiple // Allow multiple selections
+            value={assignedTo} 
+            required 
+            onChange={(e) => {
+              const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
+              setAssignedTo(selectedOptions);
+            }}
+          >
             {users.map((user) => (
               <option key={user._id} value={user._id}>
                 {user.name}
@@ -89,6 +96,7 @@ export default function TaskFormPage() {
             ))}
           </select>
         </div>
+
 
         <div>
           <button type="submit">Create Task</button>
