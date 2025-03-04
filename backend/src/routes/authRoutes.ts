@@ -1,5 +1,5 @@
 import express from 'express';
-import { login, registration } from '../controllers/authController';
+import {  getUsers, login, registration } from '../controllers/authController';
 import { authMiddleware } from '../middleware/authMiddleware';
 
 const useRouter = express.Router();
@@ -14,6 +14,8 @@ useRouter.post('/login', login);
 useRouter.get('/profile', authMiddleware, (req, res) => {
     res.json({message:"Welcome to your Profile 🤓🤓🤓 ", user:(req as any).user});
 });
+
+useRouter.get('/', authMiddleware, getUsers);
 
 
 export default useRouter;

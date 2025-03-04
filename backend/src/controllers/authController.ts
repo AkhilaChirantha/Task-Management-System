@@ -72,3 +72,12 @@ export const login = async(req:Request, res:Response) =>{
     }
 }
 
+export const getUsers = async (req: Request, res: Response) => {
+    try {
+      const users = await User.find({}, 'name _id'); // Fetch only name and ID
+      res.json(users);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Server error' });
+    }
+  };
