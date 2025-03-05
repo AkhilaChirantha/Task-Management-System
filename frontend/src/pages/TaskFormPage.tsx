@@ -128,6 +128,10 @@ export default function TaskFormPage() {
         <div>
           <button type="submit">{taskId ? 'Update Task' : 'Create Task'}</button>
         </div>
+
+        <div>
+          <button type="button" onClick={() => navigate('/tasks')}>View Task</button>
+        </div>
       </form>
     </>
   );
