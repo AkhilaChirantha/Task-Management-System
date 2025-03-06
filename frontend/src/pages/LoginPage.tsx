@@ -1,21 +1,20 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-import { FaFacebookSquare } from "react-icons/fa";
-import { FaGooglePlusG } from "react-icons/fa";
+import { FaFacebookSquare, FaGooglePlusG } from "react-icons/fa";
 
 export default function LoginPage() {
-  const [error, setError] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setError("");
     setLoading(true);
 
@@ -26,8 +25,9 @@ export default function LoginPage() {
       });
       localStorage.setItem("token", response.data.token);
       navigate("/profile");
-    } catch (err) {
-      setError(err.response?.data?.message || "Login Failed 😬");
+    } catch (error) {
+      const err = error as AxiosError<{ message?: string }>;
+      setError(err.response?.data?.message ?? "Login Failed 😬");
     } finally {
       setLoading(false);
     }
@@ -41,7 +41,7 @@ export default function LoginPage() {
         alignItems: "center",
         height: "100px",
         backgroundColor: "#f3f4f6",
-        marginLeft:"290px"
+        marginLeft:'290px'
       }}
     >
       <div
@@ -54,16 +54,24 @@ export default function LoginPage() {
           overflow: "hidden",
         }}
       >
-       
-
-        {/* left Section (Login Form) */}
+        {/* Left Section (Login Form) */}
         <div style={{ flex: 1, padding: "40px" }}>
-          <h2 style={{ textAlign: "center", marginBottom: "20px",color:"#4267B2" }}>Login to Your Account</h2>
-          <p style={{ textAlign: "center", fontSize: "14px", color:"#4267B2"}}>Login using social networks</p>
+          <h2 style={{ textAlign: "center", marginBottom: "20px", color: "#4267B2" }}>
+            Login to Your Account
+          </h2>
+          <p style={{ textAlign: "center", fontSize: "14px", color: "#4267B2" }}>
+            Login using social networks
+          </p>
           <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginBottom: "20px" }}>
-            <button style={{ backgroundColor: "#4267B2", color: "white", border: "none", padding: "10px", borderRadius: "5px" }}><FaFacebookSquare /></button>
-            <button style={{ backgroundColor: "#db4437", color: "white", border: "none", padding: "10px", borderRadius: "5px" }}><FaGooglePlusG /></button>
-            <button style={{ backgroundColor: "#0077b5", color: "white", border: "none", padding: "10px", borderRadius: "5px" }}>in</button>
+            <button style={{ backgroundColor: "#4267B2", color: "white", border: "none", padding: "10px", borderRadius: "5px" }}>
+              <FaFacebookSquare />
+            </button>
+            <button style={{ backgroundColor: "#db4437", color: "white", border: "none", padding: "10px", borderRadius: "5px" }}>
+              <FaGooglePlusG />
+            </button>
+            <button style={{ backgroundColor: "#0077b5", color: "white", border: "none", padding: "10px", borderRadius: "5px" }}>
+              in
+            </button>
           </div>
           {error && <p style={{ color: "red", textAlign: "center", fontSize: "14px" }}>{error}</p>}
 
@@ -120,11 +128,8 @@ export default function LoginPage() {
           </form>
         </div>
 
-
-
-
-         {/* right Section */}
-         <div
+        {/* Right Section */}
+        <div
           style={{
             flex: 1,
             backgroundColor: "#009688",
@@ -156,8 +161,6 @@ export default function LoginPage() {
             Sign Up
           </button>
         </div>
-
-
       </div>
     </div>
   );
