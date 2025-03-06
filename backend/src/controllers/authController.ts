@@ -18,12 +18,15 @@ export const registration = async (req: Request, res: Response) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Generate a default avatar URL using DiceBear
+    const defaultAvatar = `https://api.dicebear.com/7.x/adventurer/svg?seed=YourSeed=${encodeURIComponent(email)}`;
     // Create a new User
     const newUser = new User({
       name,
       email,
       password: hashedPassword,
-      role: role || "user"
+      role: role || "user",
+      avatar: defaultAvatar // Save the default avatar URL
     });
 
     // Save the new User
@@ -73,7 +76,7 @@ export const googleLogin = async (req: Request, res: Response) => {
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
-    const users = await User.find({}, 'name _id');
+    const users = await User.find({}, 'name _id avatar');
     res.json(users);
   } catch (err) {
     console.error(err);

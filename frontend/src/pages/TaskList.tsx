@@ -113,8 +113,32 @@ export default function TaskList() {
                         <p>{task.description}</p>
                         <p>Priority: {task.priority}</p>
                         <p>Due Date: {new Date(task.dueDate).toLocaleDateString()}</p>
-                        <p>Assigned To: {task.assignedTo.map((user: any) => user.name).join(', ')}</p>
-                        <p>Created By: {task.createdBy.name}</p>
+                        <div>
+                          <p>Assigned To:</p>
+                          <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                            {task.assignedTo.map((user: any) => (
+                              <div key={user._id} style={{ position: 'relative', textAlign: 'center' }}>
+                                <img
+                                  src={user.avatar || `https://api.dicebear.com/7.x/adventurer/svg?seed=YourSeed=${encodeURIComponent(user.email)}`}
+                                  alt={user.name}
+                                  style={{ width: '30px', height: '30px', borderRadius: '50%' , cursor: 'pointer', border:'1px solid black'}}
+                                  title={user.name} // Tooltip for name
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div>
+                          <p>Created By:</p>
+                          <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                            <img
+                              src={task.createdBy.avatar || `https://api.dicebear.com/7.x/adventurer/svg?seed=YourSeed=${encodeURIComponent(task.createdBy.email)}`}
+                              alt={task.createdBy.name}
+                              style={{ width: '30px', height: '30px', borderRadius: '50%' }}
+                              title={task.createdBy.name} // Tooltip for name
+                            />
+                          </div>
+                        </div>
                         <button onClick={() => handleUpdate(task._id)}>Update</button>
                         <button onClick={() => handleDelete(task._id)}>Delete</button>
                       </div>

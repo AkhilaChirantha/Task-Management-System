@@ -6,6 +6,7 @@ export interface IUser extends Document {
   password: string;
   role: 'admin' | 'user';
   googleId?: string; // Add this line for Google OAuth
+  avatar : string; // Add this line for avatar
 }
 
 const UserSchema: Schema = new Schema({
@@ -13,7 +14,8 @@ const UserSchema: Schema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String },
   role: { type: String, enum: ['admin', 'user'], default: 'user' },
-  googleId: { type: String } // Add this line for Google OAuth
+  googleId: { type: String }, // Add this line for Google OAuth
+  avatar: { type: String } // Add this line for avatar
 });
 
 export default mongoose.model<IUser>('User', UserSchema);

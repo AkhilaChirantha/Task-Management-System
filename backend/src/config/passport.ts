@@ -21,7 +21,8 @@ passport.use(new GoogleStrategy({
           name: profile.displayName,
           email: profile.emails?.[0].value,
           password: '', // Since it's OAuth, password might not be necessary
-          role: 'user' // Default role
+          role: 'user', // Default role
+          avatar: profile.photos?.[0].value 
         });
         await user.save();
       }
