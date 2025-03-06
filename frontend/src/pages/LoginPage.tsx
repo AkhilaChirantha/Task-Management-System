@@ -33,6 +33,11 @@ export default function LoginPage() {
     }
   };
 
+  // Function to handle Google OAuth login
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:5001/api/user/auth/google";
+  };
+
   return (
     <div
       style={{
@@ -66,7 +71,10 @@ export default function LoginPage() {
             <button style={{ backgroundColor: "#4267B2", color: "white", border: "none", padding: "10px", borderRadius: "5px" }}>
               <FaFacebookSquare />
             </button>
-            <button style={{ backgroundColor: "#db4437", color: "white", border: "none", padding: "10px", borderRadius: "5px" }}>
+            <button
+              style={{ backgroundColor: "#db4437", color: "white", border: "none", padding: "10px", borderRadius: "5px" }}
+              onClick={handleGoogleLogin} // Add onClick handler for Google OAuth
+            >
               <FaGooglePlusG />
             </button>
             <button style={{ backgroundColor: "#0077b5", color: "white", border: "none", padding: "10px", borderRadius: "5px" }}>
