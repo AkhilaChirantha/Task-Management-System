@@ -2,6 +2,7 @@ import express from 'express';
 import passport from 'passport';
 import { getUsers, login, registration } from '../controllers/authController';
 import { authMiddleware } from '../middleware/authMiddleware';
+import { generateToken } from '../utils/jwt';
 
 const useRouter = express.Router();
 
@@ -24,7 +25,11 @@ useRouter.get('/auth/google', passport.authenticate('google', { scope: ['profile
     passport.authenticate('google', { failureRedirect: '/login' })(req, res, next);
   }, (req, res) => {
     console.log('Google OAuth successful!');
-    res.redirect('/');
+        // Generate a JWT token
+        const token = generateToken({ userId: (req.user as any)._id, role: (req.user as any).role, name: (req.user as any).name });
+
+        // Redirect to the frontend profile page with the token
+        res.redirect(`http://localhost:5173/profile?token=${token}`);
   });
 
 export default useRouter;
