@@ -68,6 +68,20 @@ export default function ProjectTasksPage() {
     }
   };
 
+    // Handle project deletion
+    const handleDeleteProject = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        await axios.delete(`http://localhost:5001/api/projects/${projectId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        navigate('/profile'); // Redirect to the profile page after deletion
+      } catch (err: any) {
+        setError(err.response?.data?.message || 'Failed to delete project');
+      }
+    };
+
+
   return (
     <>
       <div>Project: {project?.name}</div>
@@ -147,6 +161,20 @@ export default function ProjectTasksPage() {
       <div style={{ marginTop: '20px' }}>
         <button onClick={() => navigate(`/projects/${projectId}/board`)}>
           Go to Task Board
+        </button>
+
+        <button
+          onClick={handleDeleteProject}
+          style={{
+            backgroundColor: '#FF4500',
+            color: 'white',
+            padding: '10px',
+            borderRadius: '5px',
+            border: 'none',
+            cursor: 'pointer',
+          }}
+        >
+          Delete Project
         </button>
       </div>
     </>
