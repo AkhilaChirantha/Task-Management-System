@@ -10,25 +10,40 @@ export default function TaskFormPage() {
   const [dueDate, setDueDate] = useState('');
   const [assignedTo, setAssignedTo] = useState<string[]>([]); // Array of user IDs
   const [users, setUsers] = useState<any[]>([]); // State to store the list of users
+  const [projects, setProjects] = useState<any[]>([]); // State to store the list of projects
+  const [selectedProject, setSelectedProject] = useState<string>(''); // Selected project ID
   const navigate = useNavigate();
   const { taskId } = useParams(); // Get taskId from the URL if updating
 
-  // Fetch the list of users
+  // Fetch the list of users and projects
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchUsersAndProjects = async () => {
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+
       try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get(`http://localhost:5001/api/user`, {
+        // Fetch users
+        const usersResponse = await axios.get(`http://localhost:5001/api/user`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setUsers(response.data);
+        setUsers(usersResponse.data);
+
+        // Fetch projects created by the logged-in user
+        const projectsResponse = await axios.get(`http://localhost:5001/api/projects`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setProjects(projectsResponse.data);
       } catch (err) {
-        console.error('Failed to fetch users', err);
+        console.error('Failed to fetch users or projects', err);
       }
     };
 
-    fetchUsers();
-  }, []);
+    fetchUsersAndProjects();
+  }, [navigate]);
 
   // Fetch task data if updating
   useEffect(() => {
@@ -45,6 +60,7 @@ export default function TaskFormPage() {
           setPriority(task.priority);
           setDueDate(new Date(task.dueDate).toISOString().split('T')[0]); // Format date for input field
           setAssignedTo(task.assignedTo.map((user: any) => user._id)); // Set assigned users
+          setSelectedProject(task.project); // Set the project ID
         } catch (err) {
           console.error('Failed to fetch task', err);
         }
@@ -57,18 +73,18 @@ export default function TaskFormPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-
+  
     try {
       const token = localStorage.getItem('token');
       const url = taskId ? `http://localhost:5001/api/tasks/${taskId}` : `http://localhost:5001/api/tasks/`;
       const method = taskId ? 'put' : 'post';
-
+  
       const response = await axios[method](
         url,
-        { title, description, priority, dueDate, assignedTo },
+        { title, description, priority, dueDate, assignedTo, project: selectedProject }, // Include project ID
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
+  
       console.log(response.data);
       navigate('/tasks');
     } catch (err: any) {
@@ -120,6 +136,22 @@ export default function TaskFormPage() {
             {users.map((user) => (
               <option key={user._id} value={user._id}>
                 {user.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          Project:
+          <select
+            value={selectedProject}
+            required
+            onChange={(e) => setSelectedProject(e.target.value)}
+          >
+            <option value="">Select a project</option>
+            {projects.map((project) => (
+              <option key={project._id} value={project._id}>
+                {project.name}
               </option>
             ))}
           </select>

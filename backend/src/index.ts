@@ -7,6 +7,7 @@ import taskRouter from './routes/taskRoutes';
 import passport from 'passport';
 import session from 'express-session';
 import './config/passport'; // Import the passport configuration
+import projectRoute from './routes/projectRoutes';
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use(passport.session());
 // Routes
 app.use('/api/user', useRouter);
 app.use('/api/tasks', taskRouter);
+app.use('/api/projects', projectRoute);
 
 app.get('/', (req, res) => {
   res.send('Task Management System Backend');

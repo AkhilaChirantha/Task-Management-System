@@ -3,7 +3,7 @@ import Task from "../models/Task";
 
 //Create a new Task
 export const createTask = async ( req:Request, res:Response ) => {
-    const { title, description, priority, dueDate, assignedTo} = req.body;
+    const { title, description, priority, dueDate, assignedTo, project} = req.body;
     const  createdBy = (req as any).user.userId; // Here is getting the user ID from the JWT token.
 
 
@@ -14,7 +14,8 @@ export const createTask = async ( req:Request, res:Response ) => {
             priority,
             dueDate,
             assignedTo,
-            createdBy
+            createdBy,
+            project,
         });
         await task.save();
         res.status(201).json({message: 'Task saved successfully 🥳'});
@@ -26,17 +27,16 @@ export const createTask = async ( req:Request, res:Response ) => {
     }
 }
 
-
 //Update a Task
 export const updateTask = async ( req:Request, res:Response) => {
     const { id } = req.params;
-    const { title, description, priority, status, dueDate, assignedTo } = req.body;
+    const { title, description, priority, status, dueDate, assignedTo, project } = req.body;
 
 
     try {
         const task = await Task.findByIdAndUpdate(
             id,
-            { title, description, priority, status, dueDate, assignedTo },
+            { title, description, priority, status, dueDate, assignedTo, project },
             { new: true }
         ).populate('assignedTo', 'name email').populate('createdBy', 'name email');
 
@@ -51,7 +51,6 @@ export const updateTask = async ( req:Request, res:Response) => {
         res.status(500).json({message: 'Server Error'});
     }
 };
-
 
 //Delete a task
 export const deleteTask = async (req:Request, res:Response) => {
@@ -70,7 +69,6 @@ export const deleteTask = async (req:Request, res:Response) => {
         res.status(500).json({message:"Server Error"});
     }
 }
-
 
 //Get all Tasks
 export const getAllTasks = async(req:Request, res:Response) => {
