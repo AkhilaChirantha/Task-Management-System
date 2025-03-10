@@ -8,6 +8,7 @@ import TaskList from './pages/TaskList';
 import ProjectTasksPage from './pages/ProjectTasksPage';
 import CreateProjectPage from './pages/CreateProjectPage';
 import ProjectTaskBoardPage from './pages/ProjectTaskBoardPage';
+import HeroPage from './pages/HeroPage';
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
         <Route path='/projects/:projectId/tasks' element={<ProjectTasksPage/>} />
         <Route path="/projects/create" element={<CreateProjectPage />} />
         <Route path="/projects/:projectId/board" element={<ProjectTaskBoardPage />} />
+        <Route path="/hero" element={<HeroPage />} />
       </Routes>
     </Router>
   );
