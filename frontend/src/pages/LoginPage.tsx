@@ -47,7 +47,7 @@ export default function LoginPage() {
      {error && <p style={{ color: "red"}}>{error}</p>}
     <div style={{backgroundColor:'#A6E68D', fontFamily:'Iowan Old Style', minHeight:'88vh', padding:'40px',overflow:'hidden', display:'flex' }}>
 
-      {/* Gray Box with Login Form */} 
+      {/* Left Side - Gray Box with Login Form */} 
       <div style={{backgroundColor:'#F3F3F3', borderRadius:'10px',minWidth:'600px'}}>
         
         <div style={{fontWeight:'500', fontSize:'25px', paddingTop:'87px', paddingLeft:'49px'}}>Login to Your Account 😘</div>
@@ -91,7 +91,7 @@ export default function LoginPage() {
                   <button type="reset" 
                   style={{width:'180px', height:'50px',fontFamily:'Iowan Old Style', fontSize:'20px', border:'none',backgroundColor:'#ffffff', fontWeight:'500', color:'#379413', borderRadius:'10px', boxShadow:'0 1px 2px rgba(0,0,0,0.35)', cursor:'pointer'}}
                   disabled={loading} onClick={handleReset}>
-                  {loading ? "Logging in..." : "Cancel"}</button>
+                  Cancel</button>
             </div>
 
           </form>
