@@ -2,7 +2,6 @@ import axios, { AxiosError } from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-import { FaFacebookSquare, FaGooglePlusG } from "react-icons/fa";
 
 export default function LoginPage() {
   const [error, setError] = useState<string>("");
@@ -38,138 +37,108 @@ export default function LoginPage() {
     window.location.href = "http://localhost:5001/api/user/auth/google";
   };
 
-  return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100px",
-        backgroundColor: "#f3f4f6",
-        marginLeft:'290px'
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          width: "800px",
-          background: "#fff",
-          borderRadius: "10px",
-          boxShadow: "0 5px 15px rgba(0,0,0,0.2)",
-          overflow: "hidden",
-        }}
-      >
-        {/* Left Section (Login Form) */}
-        <div style={{ flex: 1, padding: "40px" }}>
-          <h2 style={{ textAlign: "center", marginBottom: "20px", color: "#4267B2" }}>
-            Login to Your Account
-          </h2>
-          <p style={{ textAlign: "center", fontSize: "14px", color: "#4267B2" }}>
-            Login using social networks
-          </p>
-          <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginBottom: "20px" }}>
-            <button style={{ backgroundColor: "#4267B2", color: "white", border: "none", padding: "10px", borderRadius: "5px" }}>
-              <FaFacebookSquare />
-            </button>
-            <button
-              style={{ backgroundColor: "#db4437", color: "white", border: "none", padding: "10px", borderRadius: "5px" }}
-              onClick={handleGoogleLogin} // Add onClick handler for Google OAuth
-            >
-              <FaGooglePlusG />
-            </button>
-            <button style={{ backgroundColor: "#0077b5", color: "white", border: "none", padding: "10px", borderRadius: "5px" }}>
-              in
-            </button>
-          </div>
-          {error && <p style={{ color: "red", textAlign: "center", fontSize: "14px" }}>{error}</p>}
+  const handleReset = () => {
+    setEmail('');
+    setPassword('');
+  }
 
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-            <input
-              type="email"
-              value={email}
-              required
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              style={{ width: "93%", padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
-            />
-            <div style={{ position: "relative" }}>
-              <input
-                type={showPassword ? "text" : "password"}
-                value={password}
+  return (
+    <>
+     {error && <p style={{ color: "red"}}>{error}</p>}
+    <div style={{backgroundColor:'#A6E68D', fontFamily:'Iowan Old Style', minHeight:'88vh', padding:'40px',overflow:'hidden', display:'flex' }}>
+
+      {/* Gray Box with Login Form */} 
+      <div style={{backgroundColor:'#F3F3F3', borderRadius:'10px',minWidth:'600px'}}>
+        
+        <div style={{fontWeight:'500', fontSize:'25px', paddingTop:'87px', paddingLeft:'49px'}}>Login to Your Account 😘</div>
+        
+        {/* Login Form */} 
+        <div style={{paddingTop:'42px', display:'flex',justifyContent:'center'}}>
+          <form style={{display:'flex', flexDirection:'column', paddingTop:'12px', rowGap:'15px', }} onSubmit={handleSubmit}>
+
+            <input 
+                type="email"
+                value={email}
+                placeholder="Enter Your Email"
                 required
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                style={{ width: "93%", padding: "10px", borderRadius: "5px", border: "1px solid #ccc" }}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                style={{
-                  position: "absolute",
-                  right: "10px",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
+                onChange={(e) => setEmail(e.target.value)}
+                style={{width:'480px', height:'50px',fontFamily:'Iowan Old Style', fontSize:'15px', border:'1px solid rgba(0, 0, 0, 0.35)', paddingLeft:'19px', borderRadius:'10px', backgroundColor:'#F3F3F3'}} />
+
+            <div style={{ position: "relative" }}>
+                <input 
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    placeholder="Enter Password" 
+                    required
+                    onChange={(e) => setPassword(e.target.value)}
+                    style={{width:'480px', height:'50px',fontFamily:'Iowan Old Style', fontSize:'15px', border:'1px solid rgba(0,0,0,0.35)', paddingLeft:'19px', borderRadius:'10px', backgroundColor:'#F3F3F3' }} />
+
+                <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)', background: 'transparent', border: 'none', cursor: 'pointer',color:'#000000 ',opacity:'35%'}} >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
             </div>
-            <button
-              type="submit"
-              style={{
-                backgroundColor: "#009688",
-                color: "white",
-                padding: "10px",
-                borderRadius: "5px",
-                border: "none",
-                cursor: "pointer",
-                fontSize: "16px",
-                fontWeight: "bold",
-              }}
-              disabled={loading}
-            >
-              {loading ? "Logging in..." : "Sign In"}
-            </button>
+
+
+            <div style={{display:'flex', flexDirection:'row', columnGap:'30px', justifyContent:'center', paddingTop:'20px'}}>
+                  <button type="submit" 
+                  style={{width:'180px', height:'50px',fontFamily:'Iowan Old Style', fontSize:'20px', border:'none',backgroundColor:'#ffffff', fontWeight:'500', color:'#379413', borderRadius:'10px', boxShadow:'0 1px 2px rgba(0,0,0,0.35)', cursor:'pointer'}}
+                  disabled={loading}>
+                  {loading ? "Logging in..." : "Sign In"}</button>
+
+                  <button type="reset" 
+                  style={{width:'180px', height:'50px',fontFamily:'Iowan Old Style', fontSize:'20px', border:'none',backgroundColor:'#ffffff', fontWeight:'500', color:'#379413', borderRadius:'10px', boxShadow:'0 1px 2px rgba(0,0,0,0.35)', cursor:'pointer'}}
+                  disabled={loading} onClick={handleReset}>
+                  {loading ? "Logging in..." : "Cancel"}</button>
+            </div>
+
           </form>
         </div>
 
-        {/* Right Section */}
-        <div
-          style={{
-            flex: 1,
-            backgroundColor: "#009688",
-            color: "white",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "column",
-            padding: "20px",
-          }}
-        >
-          <h1 style={{ fontSize: "24px", textAlign: "center" }}>New Here?</h1>
-          <p style={{ textAlign: "center", fontSize: "14px", marginTop: "10px" }}>
-            Sign up and discover a great amount of new opportunities!
-          </p>
-          <button
-            onClick={() => navigate("/register")}
-            style={{
-              backgroundColor: "white",
-              color: "#009688",
-              padding: "10px 20px",
-              borderRadius: "20px",
-              border: "none",
-              cursor: "pointer",
-              fontWeight: "bold",
-              marginTop: "10px",
-            }}
-          >
-            Sign Up
-          </button>
+
+        {/* OR Part */} 
+        <div style={{display:'flex', paddingTop:'40px', alignItems:'center'}}>
+          <hr style={{width:'220px', height:'1px', backgroundColor:'rgba(0,0,0,0.20)'}}/> <div style={{color:'rgba(0,0,0,0.35)'}}>Or</div> <hr style={{width:'220px', height:'1px', backgroundColor:'rgba(0,0,0,0.20)'}}/>
         </div>
+
+
+        {/* Social Authentications */}
+
+        <div style={{display:'flex', flexDirection:'column', alignItems:'center', rowGap:'15px', paddingTop:'25px'}}>
+
+          <div style={{display:'flex', flexDirection:'row', columnGap:'20px'}}>
+          <button style={{border:'none',width:'200px', height:'60px',fontFamily:'Iowan Old Style', fontSize:'18px',backgroundColor:'#ffffff', fontWeight:'500',  borderRadius:'10px', boxShadow:'0 1px 2px rgba(0,0,0,0.35)',display:'flex', alignItems:'center', gap:'20px', cursor:'pointer'}}  onClick={handleGoogleLogin}><img src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png" style={{width:'30px', height:'30px', paddingLeft:'10px'}}/>Google</button>
+          <button style={{border:'none',width:'200px', height:'60px',fontFamily:'Iowan Old Style', fontSize:'18px',backgroundColor:'#ffffff', fontWeight:'500',  borderRadius:'10px', boxShadow:'0 1px 2px rgba(0,0,0,0.35)',display:'flex', alignItems:'center', gap:'20px', cursor:'pointer'}}><img src="https://pngimg.com/d/facebook_logos_PNG19753.png" style={{width:'30px', height:'30px', paddingLeft:'10px'}}/>Facebook</button>
+          </div>
+
+          <div style={{display:'flex', flexDirection:'row', columnGap:'20px'}}>
+            <button style={{border:'none',width:'200px', height:'60px',fontFamily:'Iowan Old Style', fontSize:'18px',backgroundColor:'#ffffff', fontWeight:'500',  borderRadius:'10px', boxShadow:'0 1px 2px rgba(0,0,0,0.35)',display:'flex', alignItems:'center', gap:'20px', cursor:'pointer'}}><img src="https://www.iconpacks.net/icons/2/free-linkedin-logo-icon-2430-thumb.png" style={{width:'25px', height:'25px', paddingLeft:'10px'}}/>Linkedin</button>
+            <button style={{border:'none',width:'200px', height:'60px',fontFamily:'Iowan Old Style', fontSize:'18px',backgroundColor:'#ffffff', fontWeight:'500',  borderRadius:'10px', boxShadow:'0 1px 2px rgba(0,0,0,0.35)',display:'flex', alignItems:'center', gap:'20px', cursor:'pointer'}}><img src="https://pngimg.com/d/apple_logo_PNG19666.png" style={{width:'25px', height:'25px', paddingLeft:'10px'}}/>Apple</button>
+          </div>
+          
+         
+        </div>
+
+
       </div>
+
+
+
+      {/* Right Side part with Logo and others. */} 
+      <div style={{display:'flex', flex:'1', justifyContent:'center', alignItems:'center', flexDirection:'column'}}> 
+        <div style={{ fontSize:'20px', fontWeight:'500' }}>ABC</div>
+        <div style={{ fontSize:'35px', fontWeight:'600' }}>Task Management System</div>
+        <div> <img src="logo.jpg" style={{width:'500px', height:'396px'}} /></div>
+        <div style={{ fontSize:'20px', fontWeight:'500' }}>New User</div>
+        <div style={{textAlign:'center', fontSize:'18px', fontWeight:'400'}}>Create an account & discover a great amount of new <br /> opportunities 😍 </div>
+        <div style={{paddingTop:'20px'}}> <button style={{border:' none', width:'200px', height:'60px', backgroundColor:'#F88A1A', color:'#ffffff', fontSize:'20px', boxShadow:'0 1px 2px rgba(0,0,0,0.35)', borderRadius:'10px', cursor:'pointer'}} onClick={() => navigate('/register')}>Sign Up</button></div>
+
+      </div>
+
+
     </div>
+    </>
   );
 }

@@ -15,7 +15,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path='/' element={<Home/>} />
+        <Route path='/hero' element={<Home/>} />
         <Route path='/register' element={<RegistrationPage/>} />
         <Route path='/login' element={<LoginPage/>} />
         <Route path='/profile' element={<ProfilePage/>} />
@@ -25,7 +25,7 @@ function App() {
         <Route path='/projects/:projectId/tasks' element={<ProjectTasksPage/>} />
         <Route path="/projects/create" element={<CreateProjectPage />} />
         <Route path="/projects/:projectId/board" element={<ProjectTaskBoardPage />} />
-        <Route path="/hero" element={<HeroPage />} />
+        <Route path="/" element={<HeroPage />} />
       </Routes>
     </Router>
   );
