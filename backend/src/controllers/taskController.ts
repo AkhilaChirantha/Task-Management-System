@@ -4,7 +4,7 @@ import Task from "../models/Task";
 //Create a new Task
 export const createTask = async ( req:Request, res:Response ) => {
     const { title, description, priority, dueDate, assignedTo, project} = req.body;
-    const  createdBy = (req as any).user.userId; // Here is getting the user ID from the JWT token.
+    const  createdBy = (req as any).user._id; // Here is getting the user ID from the JWT token.
 
 
     try {
