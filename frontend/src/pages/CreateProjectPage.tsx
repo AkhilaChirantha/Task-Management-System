@@ -6,6 +6,10 @@ export default function CreateProjectPage() {
   const [error, setError] = useState('');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [projectManager, setProjectManager] = useState('');
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -16,7 +20,7 @@ export default function CreateProjectPage() {
       const token = localStorage.getItem('token');
       const response = await axios.post(
         'http://localhost:5001/api/projects',
-        { name, description },
+        { name, description, startDate, endDate, projectManager },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       console.log('Project created:', response.data);
@@ -48,6 +52,34 @@ export default function CreateProjectPage() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Enter project description"
+          />
+        </div>
+        <div>
+          <label>Start Date:</label>
+          <input
+            type="date"
+            value={startDate}
+            required
+            onChange={(e) => setStartDate(e.target.value)}
+          />
+        </div>
+        <div>
+          <label>End Date:</label>
+          <input
+            type="date"
+            value={endDate}
+            required
+            onChange={(e) => setEndDate(e.target.value)}
+          />
+        </div>
+        <div>
+          <label>Project Manager:</label>
+          <input
+            type="text"
+            value={projectManager}
+            required
+            onChange={(e) => setProjectManager(e.target.value)}
+            placeholder="Enter project manager's name"
           />
         </div>
         <button type="submit">Create Project</button>

@@ -3,6 +3,7 @@ import User from "../models/User";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../utils/jwt";
 
+// User Registration
 export const registration = async (req: Request, res: Response) => {
   const { name, email, password, role } = req.body;
 
@@ -26,7 +27,7 @@ export const registration = async (req: Request, res: Response) => {
       email,
       password: hashedPassword,
       role: role || "user",
-      avatar: defaultAvatar // Save the default avatar URL
+      avatar: defaultAvatar, // Save the default avatar URL
     });
 
     // Save the new User
@@ -40,6 +41,7 @@ export const registration = async (req: Request, res: Response) => {
   }
 };
 
+// User Login
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
@@ -69,17 +71,45 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
+// Google Login (handled by Passport.js)
 export const googleLogin = async (req: Request, res: Response) => {
-  // This is handled by Passport.js, so no need for additional logic here
   res.json({ message: "Google login successful", user: req.user });
 };
 
+// Get All Users
 export const getUsers = async (req: Request, res: Response) => {
   try {
-    const users = await User.find({}, 'name _id avatar');
+    // Fetch users with name, _id, avatar, and email fields
+    const users = await User.find({}, 'name _id avatar email');
     res.json(users);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Get User Profile (NEW FUNCTION)
+export const getProfile = async (req: Request, res: Response) => {
+  try {
+    // Fetch the user from the request object (attached by authMiddleware)
+    const user = (req as any).user;
+
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    // Return the user's profile data, including the email and avatar
+    res.json({
+      user: {
+        name: user.name,
+        role: user.role,
+        email: user.email,
+        avatar: user.avatar, // Ensure avatar is included
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };

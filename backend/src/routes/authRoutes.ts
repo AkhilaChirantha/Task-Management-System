@@ -1,6 +1,6 @@
 import express from 'express';
 import passport from 'passport';
-import { getUsers, login, registration } from '../controllers/authController';
+import { getUsers, login, registration, getProfile } from '../controllers/authController'; // Import getProfile
 import { authMiddleware } from '../middleware/authMiddleware';
 import { generateToken } from '../utils/jwt';
 
@@ -10,16 +10,15 @@ const useRouter = express.Router();
 useRouter.post('/register', registration);
 useRouter.post('/login', login);
 
-// Protected Route
-useRouter.get('/profile', authMiddleware, (req, res) => {
-  res.json({ message: "Welcome to your Profile 🤓🤓🤓 ", user: (req as any).user });
-});
+// Protected Route to fetch user profile
+useRouter.get('/profile', authMiddleware, getProfile); // Use getProfile here
 
+// Fetch all users (protected route)
 useRouter.get('/', authMiddleware, getUsers);
 
 // Google OAuth Routes
 useRouter.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-  
+
 useRouter.get('/auth/google/callback', (req, res, next) => {
   console.log('Google OAuth callback received...');
   passport.authenticate('google', { failureRedirect: '/login' })(req, res, next);

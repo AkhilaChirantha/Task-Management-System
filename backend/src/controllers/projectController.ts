@@ -3,39 +3,39 @@ import Project from "../models/Project";
 import Task from "../models/Task";
 
 //Create a new Project
-export const createProject = async(req:Request,res:Response) => {
-    const { name, description } = req.body;
-    const createdBy = ( req as any ).user.userId; //Get the logged in user's id
-
-
+export const createProject = async (req: Request, res: Response) => {
+    const { name, description, startDate, endDate, projectManager } = req.body;
+    const createdBy = (req as any).user._id; // Ensure this is the logged-in user's ID
+  
     try {
-
-        const sameNameProject = await Project.findOne({name});
-        if(sameNameProject){
-            res.status(400).json({message: 'Project with that name already exists. Please use a different project name. 😇😇'});
-            return;
-        }
-
-        const project = new Project({ name, description, createdBy });
-        await project.save();
-        res.status(201).json({message:"Project created successfully 👌❤️", project});
+      const sameNameProject = await Project.findOne({ name });
+      if (sameNameProject) {
+        res.status(400).json({ message: 'Project with that name already exists. Please use a different project name. 😇😇' });
+        return;
+      }
+  
+      const project = new Project({ name, description, startDate, endDate, projectManager, createdBy });
+      await project.save();
+  
+      res.status(201).json({ message: "Project created successfully 👌❤️", project });
     } catch (error) {
-        res.status(500).json({ message: 'Error creating project / Server Error' });
+      console.error('Error creating project:', error); // Log the error
+      res.status(500).json({ message: 'Error creating project / Server Error' });
     }
-};
+  };
 
 //Get all Projects
-export const getProjects = async(req:Request, res:Response) => {
-    const createdBy = (req as any).user.userId;
-
-
+export const getProjects = async (req: Request, res: Response) => {
+    const createdBy = (req as any).user._id; // Ensure this is the logged-in user's ID
+  
     try {
-        const projects = await Project.find({ createdBy});
-        res.json(projects);
+      const projects = await Project.find({ createdBy }).select('name description startDate endDate projectManager status');
+      res.json(projects);
     } catch (error) {
-        res.status(500).json({ message: 'Error getting projects / Server Error' });
+      console.error('Error fetching projects:', error); // Log the error
+      res.status(500).json({ message: 'Error getting projects / Server Error' });
     }
-}
+  };
 
 //Get Projects by Id
 export const getProjectById = async(req:Request, res:Response) => {
@@ -56,10 +56,10 @@ export const getProjectById = async(req:Request, res:Response) => {
 //Update Project
 export const updateProject = async(req:Request, res:Response) => {
     const { id } = req.params;
-    const { name, description } = req.body;
+    const { name, description, startDate, endDate, projectManager } = req.body;
 
     try {
-        const project = await Project.findByIdAndUpdate( id,{name, description}, {new:true} );
+        const project = await Project.findByIdAndUpdate( id,{name, description, startDate, endDate, projectManager}, {new:true} );
         if(!project){
             res.status(404).json({ message: 'Project not found ☹️' });
         }
