@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 
-export default function TaskFormPage() {
+export default function ProjectTasksPage() {
   const [error, setError] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -12,8 +12,10 @@ export default function TaskFormPage() {
   const [users, setUsers] = useState<any[]>([]); // State to store the list of users
   const [projects, setProjects] = useState<any[]>([]); // State to store the list of projects
   const [selectedProject, setSelectedProject] = useState<string>(''); // Selected project ID
+  const [isEditing, setIsEditing] = useState(false); // State to toggle between create and edit mode
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null); // State to store the task ID being edited
   const navigate = useNavigate();
-  const { taskId } = useParams(); // Get taskId from the URL if updating
+  const { projectId } = useParams();
 
   // Fetch the list of users and projects
   useEffect(() => {
@@ -47,11 +49,11 @@ export default function TaskFormPage() {
 
   // Fetch task data if updating
   useEffect(() => {
-    if (taskId) {
+    if (editingTaskId) {
       const fetchTask = async () => {
         try {
           const token = localStorage.getItem('token');
-          const response = await axios.get(`http://localhost:5001/api/tasks/${taskId}`, {
+          const response = await axios.get(`http://localhost:5001/api/tasks/${editingTaskId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           const task = response.data;
@@ -68,33 +70,40 @@ export default function TaskFormPage() {
 
       fetchTask();
     }
-  }, [taskId]);
+  }, [editingTaskId]);
 
+  // Handle task creation or update
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-  
+
     try {
       const token = localStorage.getItem('token');
-      const url = taskId ? `http://localhost:5001/api/tasks/${taskId}` : `http://localhost:5001/api/tasks/`;
-      const method = taskId ? 'put' : 'post';
-  
+      const url = isEditing ? `http://localhost:5001/api/tasks/${editingTaskId}` : `http://localhost:5001/api/tasks/`;
+      const method = isEditing ? 'put' : 'post';
+
       const response = await axios[method](
         url,
         { title, description, priority, dueDate, assignedTo, project: selectedProject }, // Include project ID
         { headers: { Authorization: `Bearer ${token}` } }
       );
-  
+
       console.log(response.data);
-      navigate('/tasks');
+      navigate(`/projects/${projectId}/board`);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to save task 😢😢😢😢');
     }
   };
 
+  // Handle task update (populate form for editing)
+  const handleUpdate = (taskId: string) => {
+    setIsEditing(true);
+    setEditingTaskId(taskId);
+  };
+
   return (
     <>
-      <div>{taskId ? 'Update Task' : 'Create Task'}</div>
+      <div>{isEditing ? 'Update Task' : 'Create Task'}</div>
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
       <form onSubmit={handleSubmit}>
@@ -158,11 +167,11 @@ export default function TaskFormPage() {
         </div>
 
         <div>
-          <button type="submit">{taskId ? 'Update Task' : 'Create Task'}</button>
+          <button type="submit">{isEditing ? 'Update Task' : 'Create Task'}</button>
         </div>
 
         <div>
-          <button type="button" onClick={() => navigate('/tasks')}>View Task</button>
+          <button type="button" onClick={() => navigate(`/projects/${projectId}/board`)}>View Task</button>
         </div>
       </form>
     </>
