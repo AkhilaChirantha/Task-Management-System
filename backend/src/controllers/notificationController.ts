@@ -7,14 +7,16 @@ export const getNotifications = async (req: Request, res: Response) => {
   const userId = (req as any).user._id;
 
   try {
-    const notifications = await Notification.find({ userId }).sort({ createdAt: -1 });
+    const notifications = await Notification.find({ userId })
+      .sort({ createdAt: -1 })
+      .populate('projectId', 'name'); // Populate the project name
+
     res.json(notifications);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error fetching notifications' });
   }
 };
-
 // Mark a notification as read
 export const markAsRead = async (req: Request, res: Response) => {
   const { id } = req.params;

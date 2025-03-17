@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { IoIosNotificationsOutline } from "react-icons/io"; // Import the bell icon
+import { FaBell } from 'react-icons/fa';
 
 const NotificationComponent = () => {
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -68,7 +68,7 @@ const NotificationComponent = () => {
         onClick={toggleDropdown}
         style={{ cursor: 'pointer', position: 'relative' }}
       >
-        <IoIosNotificationsOutline  size={24} />
+        <FaBell size={24} />
         {/* Show unread count */}
         {unreadCount > 0 && (
           <span
