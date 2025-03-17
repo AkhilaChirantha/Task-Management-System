@@ -1,28 +1,39 @@
 import { Request, Response } from "express";
 import Project from "../models/Project";
 import Task from "../models/Task";
+import Notification from "../models/Notification";
 
 //Create a new Project
 export const createProject = async (req: Request, res: Response) => {
-    const { name, description, startDate, endDate, projectManager } = req.body;
-    const createdBy = (req as any).user._id; // Ensure this is the logged-in user's ID
-  
-    try {
-      const sameNameProject = await Project.findOne({ name });
-      if (sameNameProject) {
-        res.status(400).json({ message: 'Project with that name already exists. Please use a different project name. 😇😇' });
-        return;
-      }
-  
-      const project = new Project({ name, description, startDate, endDate, projectManager, createdBy });
-      await project.save();
-  
-      res.status(201).json({ message: "Project created successfully 👌❤️", project });
-    } catch (error) {
-      console.error('Error creating project:', error); // Log the error
-      res.status(500).json({ message: 'Error creating project / Server Error' });
+  const { name, description, startDate, endDate, projectManager, assignedUsers } = req.body;
+  const createdBy = (req as any).user._id;
+
+  try {
+    const sameNameProject = await Project.findOne({ name });
+    if (sameNameProject) {
+      res.status(400).json({ message: 'Project with that name already exists. Please use a different project name. 😇😇' });
+      return;
     }
-  };
+
+    const project = new Project({ name, description, startDate, endDate, projectManager, createdBy, assignedUsers });
+    await project.save();
+
+    // Send notifications to assigned users
+    for (const userId of assignedUsers) {
+      const notification = new Notification({
+        userId,
+        message: `You have been assigned to the project "${name}".`,
+        projectId: project._id,
+      });
+      await notification.save();
+    }
+
+    res.status(201).json({ message: "Project created successfully 👌❤️", project });
+  } catch (error) {
+    console.error('Error creating project:', error);
+    res.status(500).json({ message: 'Error creating project / Server Error' });
+  }
+};
 
 //Get all Projects
 export const getProjects = async (req: Request, res: Response) => {
@@ -54,20 +65,37 @@ export const getProjectById = async(req:Request, res:Response) => {
 }
 
 //Update Project
-export const updateProject = async(req:Request, res:Response) => {
-    const { id } = req.params;
-    const { name, description, startDate, endDate, projectManager } = req.body;
+export const updateProject = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { name, description, startDate, endDate, projectManager, assignedUsers } = req.body;
 
-    try {
-        const project = await Project.findByIdAndUpdate( id,{name, description, startDate, endDate, projectManager}, {new:true} );
-        if(!project){
-            res.status(404).json({ message: 'Project not found ☹️' });
-        }
-        res.json(project);
-    } catch (error) {
-        res.status(500).json({ message: 'Error updating project / Server Error'});
+  try {
+    const project = await Project.findByIdAndUpdate(
+      id,
+      { name, description, startDate, endDate, projectManager, assignedUsers },
+      { new: true }
+    );
+
+    if (!project) {
+      res.status(404).json({ message: 'Project not found ☹️' });
+      return;
     }
-}
+
+    // Send notifications to newly assigned users
+    for (const userId of assignedUsers) {
+      const notification = new Notification({
+        userId,
+        message: `You have been assigned to the project "${name}".`,
+        projectId: project._id,
+      });
+      await notification.save();
+    }
+
+    res.json(project);
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating project / Server Error' });
+  }
+};
 
 //Delete Project
 export const deleteProject = async(req:Request, res:Response) => {

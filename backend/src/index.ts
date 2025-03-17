@@ -8,6 +8,7 @@ import passport from 'passport';
 import session from 'express-session';
 import './config/passport'; // Import the passport configuration
 import projectRoute from './routes/projectRoutes';
+import notificationRouter from './routes/notificationRoutes';
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ app.use(passport.session());
 app.use('/api/user', useRouter);
 app.use('/api/tasks', taskRouter);
 app.use('/api/projects', projectRoute);
+app.use('/api/notifications', notificationRouter);
 
 app.get('/', (req, res) => {
   res.send('Task Management System Backend');

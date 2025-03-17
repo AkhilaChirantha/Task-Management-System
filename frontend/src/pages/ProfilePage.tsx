@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation, } from 'react-router-dom';
 import { CiTrash } from "react-icons/ci";
+import NotificationComponent from '../components/Notification';
 
 export default function ProfilePage() {
     const [error, setError] = useState('');
@@ -239,6 +240,7 @@ export default function ProfilePage() {
                 </div>
             </div>
         )}
+        <NotificationComponent/>
         </>
     );
 }
