@@ -33,3 +33,33 @@ export const markAsRead = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error marking notification as read' });
   }
 };
+
+// Delete a single notification
+export const deleteNotification = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const notification = await Notification.findByIdAndDelete(id);
+    if (!notification) {
+      res.status(404).json({ message: 'Notification not found' });
+      return;
+    }
+    res.json({ message: 'Notification deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error deleting notification' });
+  }
+};
+
+// Delete all notifications for a user
+export const deleteAllNotifications = async (req: Request, res: Response) => {
+  const userId = (req as any).user._id;
+
+  try {
+    await Notification.deleteMany({ userId });
+    res.json({ message: 'All notifications deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error deleting all notifications' });
+  }
+};

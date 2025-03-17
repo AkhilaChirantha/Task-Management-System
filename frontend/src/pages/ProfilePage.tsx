@@ -123,7 +123,8 @@ export default function ProfilePage() {
                         background:'#F3F3F3',
                     }} />
                 </div>
-                <NotificationComponent/>
+                <div style={{marginRight:'40px'}}><NotificationComponent/></div>
+                
             </div>
         )}
 
