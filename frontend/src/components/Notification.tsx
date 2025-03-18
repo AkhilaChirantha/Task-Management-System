@@ -54,9 +54,6 @@ const NotificationComponent = () => {
 
       // Update the unread count
       setUnreadCount(unreadCount - 1);
-
-      // Refresh the profile page to show the new project
-      window.location.reload(); // Reload the page to fetch updated projects
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }

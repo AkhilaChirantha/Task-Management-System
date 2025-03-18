@@ -49,10 +49,16 @@ export const getProjects = async (req: Request, res: Response) => {
       return;
     }
 
-    // Fetch projects that the user has not seen
-    const projects = await Project.find({ _id: { $nin: user.seenProjects } });
+    // Fetch all projects
+    const projects = await Project.find();
 
-    res.json(projects);
+    // Add a flag to indicate whether each project is seen or unseen
+    const projectsWithSeenFlag = projects.map(project => ({
+      ...project.toObject(),
+      isNew: !user.seenProjects.includes(project.id), // true if unseen, false if seen
+    }));
+
+    res.json(projectsWithSeenFlag);
   } catch (error) {
     console.error('Error fetching projects:', error);
     res.status(500).json({ message: 'Error fetching projects' });

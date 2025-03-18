@@ -21,7 +21,6 @@ export const getNotifications = async (req: Request, res: Response) => {
 // Mark a notification as read
 export const markAsRead = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const userId = (req as any).user._id;
 
   try {
     // Mark the notification as read
@@ -35,17 +34,13 @@ export const markAsRead = async (req: Request, res: Response) => {
       res.status(404).json({ message: 'Notification not found' });
       return;
     }
-        // Mark the associated project as "seen" for the user
-        await User.findByIdAndUpdate(userId, {
-          $addToSet: { seenProjects: notification.projectId }, // Add project to seenProjects
-        });
-    
-        res.json(notification);
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Error marking notification as read' });
-      }
-    };
+
+    res.json(notification);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error marking notification as read' });
+  }
+};
 
 // Delete a single notification
 export const deleteNotification = async (req: Request, res: Response) => {

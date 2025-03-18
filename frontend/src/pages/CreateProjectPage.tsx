@@ -50,8 +50,8 @@ export default function CreateProjectPage() {
         { name, description, startDate, endDate, projectManager },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log('Project created:', response.data);
       navigate('/profile'); // Redirect to profile page after creation
+      console.log('Project created:', response.data);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to create project 😢');
     }

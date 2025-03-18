@@ -19,7 +19,6 @@ function App() {
         <Route path='/login' element={<LoginPage/>} />
         <Route path='/profile' element={<ProfilePage/>} />
         <Route path='/taskform/create' element={<TaskFormPage/>} />
-
         <Route path='/projects/:projectId/tasks' element={<ProjectTasksPage/>} />
         <Route path="/projects/create" element={<CreateProjectPage />} />
         <Route path="/projects/:projectId/board" element={<ProjectTaskBoardPage />} />

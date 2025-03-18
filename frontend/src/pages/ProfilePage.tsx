@@ -14,8 +14,8 @@ export default function ProfilePage() {
     const navigate = useNavigate();
     const location = useLocation();
 
-// Fetch profile and projects
-useEffect(() => {
+  // Fetch profile and projects
+  useEffect(() => {
     const fetchProfile = async () => {
       const token = new URLSearchParams(location.search).get('token') || localStorage.getItem('token');
 
@@ -30,7 +30,7 @@ useEffect(() => {
         });
         setUser(response.data.user);
 
-        // Fetch unseen projects
+        // Fetch all projects with the "isNew" flag
         const projectsResponse = await axios.get(`http://localhost:5001/api/projects`, {
           headers: { Authorization: `Bearer ${token}` },
         });
