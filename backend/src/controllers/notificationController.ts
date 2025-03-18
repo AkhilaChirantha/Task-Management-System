@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Notification from "../models/Notification";
+import User from "../models/User";
 
 
 // Get all notifications for a user
@@ -20,19 +21,31 @@ export const getNotifications = async (req: Request, res: Response) => {
 // Mark a notification as read
 export const markAsRead = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const userId = (req as any).user._id;
 
   try {
-    const notification = await Notification.findByIdAndUpdate(id, { read: true }, { new: true });
+    // Mark the notification as read
+    const notification = await Notification.findByIdAndUpdate(
+      id,
+      { read: true },
+      { new: true }
+    );
+
     if (!notification) {
       res.status(404).json({ message: 'Notification not found' });
       return;
     }
-    res.json(notification);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error marking notification as read' });
-  }
-};
+        // Mark the associated project as "seen" for the user
+        await User.findByIdAndUpdate(userId, {
+          $addToSet: { seenProjects: notification.projectId }, // Add project to seenProjects
+        });
+    
+        res.json(notification);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error marking notification as read' });
+      }
+    };
 
 // Delete a single notification
 export const deleteNotification = async (req: Request, res: Response) => {

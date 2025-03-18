@@ -14,38 +14,39 @@ export default function ProfilePage() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    useEffect(() => {
-        const fetchProfile = async () => {
-          const token = new URLSearchParams(location.search).get('token') || localStorage.getItem('token');
-      
-          if (!token) {
-            navigate('/login');
-            return;
-          }
-      
-          try {
-            const response = await axios.get(`http://localhost:5001/api/user/profile`, {
-              headers: { Authorization: `Bearer ${token}` },
-            });
-            setUser(response.data.user);
-      
-            // Fetch projects created by the user
-            const projectsResponse = await axios.get(`http://localhost:5001/api/projects`, {
-              headers: { Authorization: `Bearer ${token}` },
-            });
-            console.log('Projects Response:', projectsResponse.data); // Log the projects response
-            setProjects(projectsResponse.data);
-      
-            localStorage.setItem('token', token); // Store the token if it came from URL
-          } catch (err: any) {
-            setError(err.response?.data?.message || 'Failed to fetch profile');
-            localStorage.removeItem('token'); // Clear invalid token
-            navigate('/login'); // Redirect to login on error
-          }
-        };
-      
-        fetchProfile();
-      }, [navigate, location]);
+// Fetch profile and projects
+useEffect(() => {
+    const fetchProfile = async () => {
+      const token = new URLSearchParams(location.search).get('token') || localStorage.getItem('token');
+
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+
+      try {
+        const response = await axios.get(`http://localhost:5001/api/user/profile`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUser(response.data.user);
+
+        // Fetch unseen projects
+        const projectsResponse = await axios.get(`http://localhost:5001/api/projects`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setProjects(projectsResponse.data);
+
+        localStorage.setItem('token', token); // Store the token if it came from URL
+      } catch (err: any) {
+        setError(err.response?.data?.message || 'Failed to fetch profile');
+        localStorage.removeItem('token'); // Clear invalid token
+        navigate('/login'); // Redirect to login on error
+      }
+    };
+
+    fetchProfile();
+  }, [navigate, location]);
+
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);

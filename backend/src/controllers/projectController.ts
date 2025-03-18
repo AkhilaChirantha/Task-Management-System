@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Project from "../models/Project";
 import Task from "../models/Task";
 import Notification from "../models/Notification";
+import User from "../models/User";
 
 //Create a new Project
 export const createProject = async (req: Request, res: Response) => {
@@ -36,17 +37,27 @@ export const createProject = async (req: Request, res: Response) => {
 };
 
 //Get all Projects
+// Get all Projects for the profile page (only unseen projects)
 export const getProjects = async (req: Request, res: Response) => {
-    const createdBy = (req as any).user._id; // Ensure this is the logged-in user's ID
-  
-    try {
-      const projects = await Project.find({ createdBy }).select('name description startDate endDate projectManager status');
-      res.json(projects);
-    } catch (error) {
-      console.error('Error fetching projects:', error); // Log the error
-      res.status(500).json({ message: 'Error getting projects / Server Error' });
+  const userId = (req as any).user._id;
+
+  try {
+    // Fetch the user to get the list of seen projects
+    const user = await User.findById(userId).select('seenProjects');
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+      return;
     }
-  };
+
+    // Fetch projects that the user has not seen
+    const projects = await Project.find({ _id: { $nin: user.seenProjects } });
+
+    res.json(projects);
+  } catch (error) {
+    console.error('Error fetching projects:', error);
+    res.status(500).json({ message: 'Error fetching projects' });
+  }
+};
 
 //Get Projects by Id
 export const getProjectById = async(req:Request, res:Response) => {
@@ -127,3 +138,4 @@ export const getProjectTasks = async (req: Request, res: Response) => {
       res.status(500).json({ message: 'Error getting tasks / Server Error' });
     }
   };
+

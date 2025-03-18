@@ -54,6 +54,9 @@ const NotificationComponent = () => {
 
       // Update the unread count
       setUnreadCount(unreadCount - 1);
+
+      // Refresh the profile page to show the new project
+      window.location.reload(); // Reload the page to fetch updated projects
     } catch (error) {
       console.error('Error marking notification as read:', error);
     }
@@ -198,40 +201,31 @@ const NotificationComponent = () => {
                       </small>
                     </div>
 
-
-
-                   <div style={{display:'flex', flexDirection:'column', alignItems:'center'}}>
-
-                   
-                    {/* Delete Button */}
-                        <div
-                          style={{ cursor: 'pointer', textAlign: 'right' }}
-                          onClick={() => handleDeleteNotification(notification._id)}
-                        >
-                          <CiTrash color='blue' />
-                        </div>
-
-                                            {/* Mark as Read Button */}
+                    {/* Mark as Read Button */}
                     {!notification.read && (
                       <button
                         style={{
-                          width:'40px',
-                          border:'none',
+                          width: '40px',
+                          border: 'none',
                           backgroundColor: 'transparent',
-                          display:'inline-block',
+                          display: 'inline-block',
                           cursor: 'pointer',
                           color: 'orange',
                           fontSize: '8px',
-                          fontFamily:'Iowan Old Style',
-                          
+                          fontFamily: 'Iowan Old Style',
                         }}
                         onClick={() => handleMarkAsRead(notification._id)}
                       >
-                        Mark 
+                        Mark
                       </button>
                     )}
 
-                        
+                    {/* Delete Button */}
+                    <div
+                      style={{ cursor: 'pointer', textAlign: 'right' }}
+                      onClick={() => handleDeleteNotification(notification._id)}
+                    >
+                      <CiTrash color='blue' />
                     </div>
                   </div>
                 </div>
